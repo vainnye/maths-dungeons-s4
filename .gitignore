@@ -2,16 +2,7 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/main/Unity.gitignore
 #
-<<<<<<< HEAD
-# /[Ll]ibrary/*
-# /[Ll]ibrary/!*.asset
-# !/[Ll]ibrary/GridBrush/*.asset
-!/[Ll]ibrary/**/*.asset
-/[Ll]ibrary/**/*
-=======
-/[Ll]ibrary/*
-!/[Ll]ibrary/*.asset
->>>>>>> 133cf69be74c10a5ed02e9d45bd33850b676a7d2
+/[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
 /[Bb]uild/
