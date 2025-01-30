@@ -3356,74 +3356,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5720277353491606258, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1988424938}
-    - targetCorrespondingSourceObject: {fileID: 5720277354388581608, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 619334431}
-    - targetCorrespondingSourceObject: {fileID: 5720277354388581608, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 619334435}
   m_SourcePrefab: {fileID: 100100000, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
 --- !u!4 &619334429 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5720277353491606260, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
   m_PrefabInstance: {fileID: 619334428}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &619334430 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5720277354388581608, guid: 4843c6294db27f84bb07ff202205e1ea, type: 3}
-  m_PrefabInstance: {fileID: 619334428}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &619334431
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619334430}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b367fd04ec7e35d40ba4bf14e4306b68, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arenaSpawnPoint: {fileID: 2018374072}
-  returnPoint: {fileID: 1280760551}
-  arenaCamera: {fileID: 956342221}
-  playerCamera: {fileID: 1994687013}
---- !u!58 &619334435
-CircleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 619334430}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.0000019073486}
-  serializedVersion: 2
-  m_Radius: 0.4
 --- !u!1 &637209563 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2434779075421890500, guid: d7e840a5c2aec48449ea09f8296f1c43, type: 3}
