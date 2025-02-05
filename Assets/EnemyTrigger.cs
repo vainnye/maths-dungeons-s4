@@ -4,44 +4,58 @@ using UnityEngine;
 
 public class EnemyTrigger : MonoBehaviour
 {
-    [SerializeField] private Transform arenaSpawnPoint; // Point de téléportation dans l'arène
-    [SerializeField] private Transform returnPoint; // Point de retour après le combat
-    [SerializeField] private GameObject arenaCamera; // Caméra de l'arène
-    [SerializeField] private GameObject playerCamera; // Caméra principale
+    [SerializeField] private Camera mainCamera;         // Référence à la caméra principale
+    [SerializeField] private Camera arenaCamera;        // Référence à la caméra de l'arène
+    [SerializeField] private Transform arenaPlayerSpawn; // Point de spawn du joueur dans l'arène
+    [SerializeField] private Transform arenaEnemySpawn;  // Point de spawn de l'ennemi dans l'arène
+    [SerializeField] private GameObject player;          // Référence au GameObject du joueur
 
-    private bool inCombat = false;
+    private Vector3 originalPlayerPosition; // Position initiale du joueur
+    private Vector3 originalEnemyPosition;  // Position initiale de l'ennemi
 
-    private void OnTriggerEnter2D(Collider2D other)
+    private void Start()
     {
-        if (other.CompareTag("Player") && !inCombat) // Vérifie que c'est le joueur
+        // Sauvegarder les positions initiales du joueur et de l'ennemi
+        originalPlayerPosition = player.transform.position;
+        originalEnemyPosition = transform.position;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        // Vérifier si le joueur entre en collision avec l'ennemi
+        if (collision.CompareTag("Player"))
         {
-            inCombat = true;
-
-            // Téléporter le joueur dans l'arène
-            other.transform.position = arenaSpawnPoint.position;
-
-            // Activer la caméra de l'arène et désactiver la caméra normale
-            arenaCamera.SetActive(true);
-            playerCamera.SetActive(false);
-
-            // Lancer le combat (appel d'une méthode externe si besoin)
-            Debug.Log("Combat commencé !");
+            Debug.Log("Téléportation dans l'arène !");
+            StartCombat(collision.gameObject);  // Lancer le combat et la téléportation
         }
+    }
+
+    private void StartCombat(GameObject player)
+    {
+        // Téléportation du joueur et de l'ennemi dans l'arène
+        player.transform.position = arenaPlayerSpawn.position;
+        transform.position = arenaEnemySpawn.position;
+
+        // Désactiver la caméra principale et activer la caméra de l'arène
+        mainCamera.enabled = false;
+        arenaCamera.enabled = true;
+
+        // Bloquer le mouvement du joueur pendant le combat
+        player.GetComponent<PlayerCtrl>().BlockMovement();
     }
 
     public void EndCombat(GameObject player)
     {
-        // Téléporter le joueur au point de retour
-        player.transform.position = returnPoint.position;
+        // Retourner aux positions initiales après le combat
+        player.transform.position = originalPlayerPosition;
+        transform.position = originalEnemyPosition;
 
-        // Activer la caméra principale et désactiver la caméra de l'arène
-        arenaCamera.SetActive(false);
-        playerCamera.SetActive(true);
+        // Réactiver la caméra principale et désactiver la caméra de l'arène
+        mainCamera.enabled = true;
+        arenaCamera.enabled = false;
 
-        inCombat = false;
-
-        Debug.Log("Combat terminé !");
+        // Autoriser à nouveau les mouvements du joueur
+        player.GetComponent<PlayerCtrl>().AllowMovement();
     }
+
 }
-
-
