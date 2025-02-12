@@ -1,114 +1,120 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CombatManager : MonoBehaviour
 {
-    [SerializeField] private HealthManager healthManager;     // Référence au gestionnaire de santé
-    [SerializeField] private Camera mainCamera;              // Référence à la caméra principale
-    [SerializeField] private Camera arenaCamera;             // Référence à la caméra de l'arène
-    [SerializeField] private Transform arenaPlayerSpawn;     // Point de spawn du joueur dans l'arène
-    [SerializeField] private Transform arenaEnemySpawn;      // Point de spawn de l'ennemi dans l'arène
-    [SerializeField] private Text questionText;              // Texte pour afficher les questions mathématiques
-    [SerializeField] private InputField answerInput;         // Champ pour saisir la réponse
-    [SerializeField] private Button submitButton;            // Bouton pour soumettre la réponse
+    [Header("RÃ©fÃ©rences")]
+    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Camera arenaCamera;
+    [SerializeField] private Transform arenaPlayerSpawn;
+    [SerializeField] private Transform arenaEnemySpawn;
+    [SerializeField] private GameObject player;
+    [SerializeField] private GameObject orc;
+    [SerializeField] private HealthManager healthManager;
 
-    private bool combatInProgress = false; // Est-ce qu'un combat est en cours ?
+    [Header("UI Combat")]
+    [SerializeField] private Text questionText;  // UI classique
+    [SerializeField] private InputField answerInput; // UI classique
+    [SerializeField] private Button submitButton;
+
+    private bool isPlayerTurn = true; // DÃ©termine qui joue
+    private int currentCorrectAnswer;
+
+    private Vector3 originalPlayerPosition; // Position de dÃ©part du joueur
+    private Vector3 originalEnemyPosition;  // Position de dÃ©part de lâ€™ennemi
 
     private void Start()
     {
-        // Assurez-vous que tout est prêt pour démarrer le combat
+        // Sauvegarde les positions initiales
+        originalPlayerPosition = player.transform.position;
+        originalEnemyPosition = orc.transform.position;
+
+        // Ajout du listener sur le bouton
+        submitButton.onClick.AddListener(CheckAnswer);
     }
 
-    // Démarre le combat et téléporte les personnages dans l'arène
-    public void StartCombat(GameObject player, GameObject orc)
+    public void StartCombat()
     {
-        // Téléportation du joueur et de l'ennemi dans l'arène
+        // TÃ©lÃ©portation du joueur et de lâ€™ennemi dans lâ€™arÃ¨ne
         player.transform.position = arenaPlayerSpawn.position;
         orc.transform.position = arenaEnemySpawn.position;
 
-        // Désactiver la caméra principale et activer la caméra de l'arène
+        // Activer la camÃ©ra de combat
         mainCamera.enabled = false;
         arenaCamera.enabled = true;
 
-        // Bloquer le mouvement du joueur pendant le combat
+        // DÃ©sactiver les mouvements du joueur
         player.GetComponent<PlayerCtrl>().BlockMovement();
 
-        // Démarrer les questions mathématiques
+        // DÃ©marrer le combat
         GenerateQuestion();
     }
 
-    // Génère une nouvelle question mathématique
     private void GenerateQuestion()
     {
-        // Exemple de génération d'une question (addition)
         int num1 = Random.Range(1, 10);
         int num2 = Random.Range(1, 10);
-        questionText.text = $"{num1} + {num2} = ?";
+        currentCorrectAnswer = num1 + num2;
 
-        // Enregistrer la bonne réponse (addition dans ce cas)
-        int correctAnswer = num1 + num2;
-
-        // Configurer la logique de réponse
-        submitButton.onClick.RemoveAllListeners();
-        submitButton.onClick.AddListener(() => CheckAnswer(correctAnswer));
+        questionText.text = $"Combien fait {num1} + {num2} ?";
+        answerInput.text = "";
     }
 
-    // Vérifie la réponse du joueur
-    private void CheckAnswer(int correctAnswer)
+    private void CheckAnswer()
     {
-        int playerAnswer = int.Parse(answerInput.text);
-        if (playerAnswer == correctAnswer)
+        int playerAnswer;
+        if (int.TryParse(answerInput.text, out playerAnswer))
         {
-            // Réponse correcte, infliger des dégâts à l'orc
-            healthManager.TakeDamageToOrc(10); // Exemple de dégâts infligés à l'orc
-        }
-        else
-        {
-            // Réponse incorrecte, infliger des dégâts au joueur
-            healthManager.TakeDamageToPlayer(5); // Exemple de dégâts infligés au joueur
-        }
+            if (playerAnswer == currentCorrectAnswer)
+            {
+                // Bonne rÃ©ponse â†’ DÃ©gÃ¢ts Ã  lâ€™orc
+                healthManager.TakeDamageToOrc(20);
+            }
+            else
+            {
+                // Mauvaise rÃ©ponse â†’ DÃ©gÃ¢ts au joueur
+                healthManager.TakeDamageToPlayer(10);
+            }
 
-        // Vérifier si le combat est terminé
-        if (healthManager.IsOrcDead())
-        {
-            EndCombat(true); // L'orc est mort
-        }
-        else if (healthManager.IsPlayerDead())
-        {
-            EndCombat(false); // Le joueur est mort
+            // VÃ©rifier si le combat est terminÃ©
+            if (healthManager.IsOrcDead())
+            {
+                EndCombat(true);
+            }
+            else if (healthManager.IsPlayerDead())
+            {
+                EndCombat(false);
+            }
+            else
+            {
+                GenerateQuestion();
+            }
         }
         else
         {
-            GenerateQuestion(); // Si le combat continue, générer une nouvelle question
+            Debug.Log("Veuillez entrer un nombre valide.");
         }
     }
 
-    // Fin du combat
     private void EndCombat(bool playerWon)
     {
-        // Afficher un message de victoire ou de défaite
-        if (playerWon)
-        {
-            Debug.Log("Le joueur a gagné !");
-        }
-        else
-        {
-            Debug.Log("Le joueur a perdu !");
-        }
+        Debug.Log(playerWon ? "Victoire !" : "DÃ©faite...");
 
-        // Réinitialiser les positions
-        // Retour au spawn initial
-        // Activer la caméra principale
+        // RÃ©activer la camÃ©ra principale
         mainCamera.enabled = true;
         arenaCamera.enabled = false;
 
-        // Réactiver les mouvements du joueur
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        // Renvoyer le joueur Ã  sa position initiale
+        player.transform.position = originalPlayerPosition;
+        orc.transform.position = originalEnemyPosition;
+
+        // RÃ©activer les mouvements du joueur
         player.GetComponent<PlayerCtrl>().AllowMovement();
 
-        // Réinitialiser la santé des personnages
+        // RÃ©initialiser la santÃ©
         healthManager.ResetHealth();
     }
 }
