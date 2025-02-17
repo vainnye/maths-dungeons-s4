@@ -20,7 +20,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private InputField answerInput; // UI classique
     [SerializeField] private Button submitButton;
 
-    private bool isPlayerTurn = true; // Détermine qui joue
+    //private bool isPlayerTurn = true; // Détermine qui joue
     private int currentCorrectAnswer;
 
     private Vector3 originalPlayerPosition; // Position de départ du joueur
@@ -57,10 +57,25 @@ public class CombatManager : MonoBehaviour
     {
         int num1 = Random.Range(1, 10);
         int num2 = Random.Range(1, 10);
-        currentCorrectAnswer = num1 + num2;
-
-        questionText.text = $"Combien fait {num1} + {num2} ?";
-        answerInput.text = "";
+        int signe = Random.Range(1, 3);
+        if(signe == 1)
+        {
+            currentCorrectAnswer = num1 + num2;
+            questionText.text = $"Combien fait {num1} + {num2} ?";
+            answerInput.text = "";
+        }
+        else if(signe == 2)
+        {
+            currentCorrectAnswer = num1 - num2;
+            questionText.text = $"Combien fait {num1} - {num2} ?";
+            answerInput.text = "";
+        }
+        else if (signe == 3)
+        {
+            currentCorrectAnswer = num1 * num2;
+            questionText.text = $"Combien fait {num1} x {num2} ?";
+            answerInput.text = "";
+        }
     }
 
     private void CheckAnswer()

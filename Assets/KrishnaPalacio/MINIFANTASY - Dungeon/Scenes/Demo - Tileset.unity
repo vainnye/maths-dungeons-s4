@@ -566,7 +566,7 @@ GameObject:
   - component: {fileID: 87912246}
   - component: {fileID: 87912245}
   - component: {fileID: 87912247}
-  m_Layer: 0
+  m_Layer: 1
   m_Name: Arena
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5352,7 +5352,7 @@ MonoBehaviour:
   arenaPlayerSpawn: {fileID: 2018374072}
   arenaEnemySpawn: {fileID: 1019729991}
   player: {fileID: 258503079}
-  combatManager: {fileID: 0}
+  combatManager: {fileID: 593534369}
 --- !u!61 &823094352
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -7272,7 +7272,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3663311246050745928, guid: 737b3db220ec5e34aa72f41bfe9e6a50, type: 3}
       propertyPath: m_UpscaleRT
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3663311246050745928, guid: 737b3db220ec5e34aa72f41bfe9e6a50, type: 3}
       propertyPath: m_CropFrameX
@@ -7352,7 +7352,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3663311246050745930, guid: 737b3db220ec5e34aa72f41bfe9e6a50, type: 3}
       propertyPath: orthographic size
-      value: 150
+      value: 169.57912
       objectReference: {fileID: 0}
     - target: {fileID: 3663311246050745930, guid: 737b3db220ec5e34aa72f41bfe9e6a50, type: 3}
       propertyPath: m_NormalizedViewPortRect.x
@@ -8194,7 +8194,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Button
+  m_text: Enter
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -9057,7 +9057,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -338.0514, y: -788.19293}
+  m_AnchoredPosition: {x: 627.50574, y: -267.94537}
   m_SizeDelta: {x: 59.1727, y: 14.3859}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1239282979
@@ -9998,8 +9998,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 730.4995, y: -232.57}
+  m_SizeDelta: {x: -1191.5343, y: -465.14}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1317217218
 MonoBehaviour:
@@ -17772,7 +17772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -118.55713, y: -718.24756}
+  m_AnchoredPosition: {x: 847, y: -198}
   m_SizeDelta: {x: 52.8857, y: 14.4951}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1580277669
@@ -17954,7 +17954,7 @@ MonoBehaviour:
   arenaPlayerSpawn: {fileID: 2018374072}
   arenaEnemySpawn: {fileID: 1019729991}
   player: {fileID: 258503079}
-  combatManager: {fileID: 0}
+  combatManager: {fileID: 593534369}
 --- !u!61 &1619331961
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -18141,7 +18141,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -234, y: -844}
+  m_AnchoredPosition: {x: -25, y: -82}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1643865429
@@ -23614,6 +23614,7 @@ GameObject:
   - component: {fileID: 1883655290}
   - component: {fileID: 1883655289}
   - component: {fileID: 1883655288}
+  - component: {fileID: 1883655291}
   m_Layer: 5
   m_Name: SubmitButton
   m_TagString: Untagged
@@ -23638,7 +23639,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -109.9438, y: -843.9}
+  m_AnchoredPosition: {x: 102.29993, y: -79.900024}
   m_SizeDelta: {x: 83.2582, y: 25.803}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1883655288
@@ -23684,7 +23685,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1883655289}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1883655291}
+        m_TargetAssemblyTypeName: InputHandler, Assembly-CSharp
+        m_MethodName: ValidateInput
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1883655289
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23723,6 +23736,20 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1883655286}
   m_CullTransparentMesh: 1
+--- !u!114 &1883655291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883655286}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3dc29d260760ee48bda7fc11345b031, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputField: {fileID: 1643865429}
+  resultText: {fileID: 2101501764}
 --- !u!1001 &1884997356
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25098,7 +25125,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -215, y: -688}
+  m_AnchoredPosition: {x: 7.499939, y: 81.04755}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2101501764
@@ -25123,7 +25150,7 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 25
+    m_FontSize: 35
     m_FontStyle: 0
     m_BestFit: 0
     m_MinSize: 2
