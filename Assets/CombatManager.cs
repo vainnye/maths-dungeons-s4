@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
+
 
 public class CombatManager : MonoBehaviour
 {
@@ -16,40 +17,44 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private HealthManager healthManager;
 
     [Header("UI Combat")]
-    [SerializeField] private Text questionText;  // UI classique
-    [SerializeField] private InputField answerInput; // UI classique
+    [SerializeField] private GameObject combatUI;
+    [SerializeField] private Text questionText;
+    [SerializeField] private InputField answerInput;
     [SerializeField] private Button submitButton;
 
-    //private bool isPlayerTurn = true; // Détermine qui joue
     private int currentCorrectAnswer;
-
-    private Vector3 originalPlayerPosition; // Position de départ du joueur
-    private Vector3 originalEnemyPosition;  // Position de départ de l’ennemi
+    private Vector3 originalPlayerPosition;
+    private Vector3 originalEnemyPosition;
 
     private void Start()
     {
-        // Sauvegarde les positions initiales
         originalPlayerPosition = player.transform.position;
         originalEnemyPosition = orc.transform.position;
-
-        // Ajout du listener sur le bouton
         submitButton.onClick.AddListener(CheckAnswer);
+        combatUI.SetActive(false);
     }
 
     public void StartCombat()
     {
-        // Téléportation du joueur et de l’ennemi dans l’arène
+        Debug.Log("StartCombat() appelé !");
+        Debug.Log("combatUI est actif ? " + combatUI.activeSelf);
+        Debug.Log("Bouton interactable ? " + submitButton.interactable);
+        Debug.Log("InputField interactable ? " + answerInput.interactable);
+
         player.transform.position = arenaPlayerSpawn.position;
         orc.transform.position = arenaEnemySpawn.position;
 
-        // Activer la caméra de combat
         mainCamera.enabled = false;
         arenaCamera.enabled = true;
 
-        // Désactiver les mouvements du joueur
         player.GetComponent<PlayerCtrl>().BlockMovement();
-
-        // Démarrer le combat
+        combatUI.SetActive(true);
+        Debug.Log("combatUI activé après SetActive : " + combatUI.activeSelf);
+        answerInput.interactable = true;
+        submitButton.interactable = true;  // Active le bouton
+        answerInput.text = "";
+        answerInput.Select();  // Focus automatique sur l'input
+        answerInput.ActivateInputField();
         GenerateQuestion();
     }
 
@@ -57,44 +62,39 @@ public class CombatManager : MonoBehaviour
     {
         int num1 = Random.Range(1, 10);
         int num2 = Random.Range(1, 10);
-        int signe = Random.Range(1, 3);
-        if(signe == 1)
+        int operation = Random.Range(1, 4);
+
+        if (operation == 1)
         {
             currentCorrectAnswer = num1 + num2;
             questionText.text = $"Combien fait {num1} + {num2} ?";
-            answerInput.text = "";
         }
-        else if(signe == 2)
+        else if (operation == 2)
         {
             currentCorrectAnswer = num1 - num2;
             questionText.text = $"Combien fait {num1} - {num2} ?";
-            answerInput.text = "";
         }
-        else if (signe == 3)
+        else
         {
             currentCorrectAnswer = num1 * num2;
             questionText.text = $"Combien fait {num1} x {num2} ?";
-            answerInput.text = "";
         }
+        answerInput.text = "";
     }
 
     private void CheckAnswer()
     {
-        int playerAnswer;
-        if (int.TryParse(answerInput.text, out playerAnswer))
+        if (int.TryParse(answerInput.text, out int playerAnswer))
         {
             if (playerAnswer == currentCorrectAnswer)
             {
-                // Bonne réponse → Dégâts à l’orc
                 healthManager.TakeDamageToOrc(20);
             }
             else
             {
-                // Mauvaise réponse → Dégâts au joueur
                 healthManager.TakeDamageToPlayer(10);
             }
 
-            // Vérifier si le combat est terminé
             if (healthManager.IsOrcDead())
             {
                 EndCombat(true);
@@ -108,28 +108,22 @@ public class CombatManager : MonoBehaviour
                 GenerateQuestion();
             }
         }
-        else
-        {
-            Debug.Log("Veuillez entrer un nombre valide.");
-        }
     }
 
     private void EndCombat(bool playerWon)
     {
         Debug.Log(playerWon ? "Victoire !" : "Défaite...");
 
-        // Réactiver la caméra principale
         mainCamera.enabled = true;
         arenaCamera.enabled = false;
 
-        // Renvoyer le joueur à sa position initiale
         player.transform.position = originalPlayerPosition;
         orc.transform.position = originalEnemyPosition;
 
-        // Réactiver les mouvements du joueur
         player.GetComponent<PlayerCtrl>().AllowMovement();
-
-        // Réinitialiser la santé
         healthManager.ResetHealth();
+        combatUI.SetActive(false);
+        answerInput.interactable = false;
     }
 }
+
