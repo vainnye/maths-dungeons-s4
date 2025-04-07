@@ -372,7 +372,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -33.125}
+  m_AnchoredPosition: {x: 87.5, y: -108.125}
   m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &63231169
@@ -2283,7 +2283,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -290}
+  m_AnchoredPosition: {x: 87.5, y: -740}
   m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &420059209
@@ -2578,7 +2578,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -175.625}
+  m_AnchoredPosition: {x: 87.5, y: -550.625}
   m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &428627352
@@ -3407,7 +3407,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &593534369
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3420,13 +3420,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f6b363bdd16b6054489bb0bb5a18bf95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mainCamera: {fileID: 1994687022}
-  arenaCamera: {fileID: 956342226}
-  arenaPlayerSpawn: {fileID: 2018374072}
-  arenaEnemySpawn: {fileID: 1019729991}
-  player: {fileID: 258503079}
-  orc: {fileID: 823094347}
-  healthManager: {fileID: 593534370}
+  playerPrefab: {fileID: 0}
+  orcPrefab: {fileID: 0}
+  arenaSceneName: ArenaScene
   combatUI: {fileID: 1317217216}
   questionText: {fileID: 2101501764}
   answerInput: {fileID: 1643865429}
@@ -7953,7 +7949,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -97.5}
+  m_AnchoredPosition: {x: 87.5, y: -247.5}
   m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1109382307
@@ -24146,7 +24142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -104.375}
+  m_AnchoredPosition: {x: 87.5, y: -329.375}
   m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1958370889
@@ -24365,7 +24361,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 87.5, y: -246.875}
+  m_AnchoredPosition: {x: 87.5, y: -771.875}
   m_SizeDelta: {x: 150, y: 35}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1974704176

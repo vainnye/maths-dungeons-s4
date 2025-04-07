@@ -1,20 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-
+using UnityEngine.SceneManagement;
 
 public class CombatManager : MonoBehaviour
 {
-    [Header("Références")]
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private Camera arenaCamera;
-    [SerializeField] private Transform arenaPlayerSpawn;
-    [SerializeField] private Transform arenaEnemySpawn;
-    [SerializeField] private GameObject player;
-    [SerializeField] private GameObject orc;
-    [SerializeField] private HealthManager healthManager;
+    [Header("Références générales")]
+    [SerializeField] private GameObject playerPrefab;
+    [SerializeField] private GameObject orcPrefab;
+    [SerializeField] private string arenaSceneName = "ArenaScene";
+    private GameObject playerInstance;
+    private GameObject orcInstance;
 
     [Header("UI Combat")]
     [SerializeField] private GameObject combatUI;
@@ -23,40 +20,83 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private Button submitButton;
 
     private int currentCorrectAnswer;
-    private Vector3 originalPlayerPosition;
-    private Vector3 originalEnemyPosition;
+    private string previousSceneName;
 
-    private void Start()
+    void Awake()
     {
-        originalPlayerPosition = player.transform.position;
-        originalEnemyPosition = orc.transform.position;
-        submitButton.onClick.AddListener(CheckAnswer);
-        combatUI.SetActive(false);
+        //DontDestroyOnLoad(this.gameObject);
     }
 
     public void StartCombat()
     {
-        Debug.Log("StartCombat() appelé !");
-        Debug.Log("combatUI est actif ? " + combatUI.activeSelf);
-        Debug.Log("Bouton interactable ? " + submitButton.interactable);
-        Debug.Log("InputField interactable ? " + answerInput.interactable);
+        previousSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.sceneLoaded += OnArenaSceneLoaded;
+        SceneManager.LoadScene(arenaSceneName);
+    }
 
-        player.transform.position = arenaPlayerSpawn.position;
-        orc.transform.position = arenaEnemySpawn.position;
+    private void OnArenaSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == arenaSceneName)
+        {
+            SceneManager.sceneLoaded -= OnArenaSceneLoaded;
+            StartCoroutine(InitializeCombatAfterSceneLoad());
+        }
+    }
 
-        mainCamera.enabled = false;
-        arenaCamera.enabled = true;
+    private IEnumerator InitializeCombatAfterSceneLoad()
+    {
+        yield return null; // attendre 1 frame
 
-        player.GetComponent<PlayerCtrl>().BlockMovement();
+        // Attendre que HealthManager soit dispo
+        HealthManager healthManager = null;
+        int maxTries = 30;
+        while (healthManager == null && maxTries-- > 0)
+        {
+            healthManager = FindObjectOfType<HealthManager>();
+            yield return null;
+        }
+
+        if (healthManager == null)
+        {
+            Debug.LogError("HealthManager introuvable !");
+            yield break;
+        }
+
+        // Idem pour les spawns
+        Transform playerSpawn = GameObject.Find("ArenaPlayerSpawn")?.transform;
+        Transform orcSpawn = GameObject.Find("ArenaEnemySpawn")?.transform;
+
+        if (playerSpawn == null || orcSpawn == null)
+        {
+            Debug.LogError("Spawn points non trouvés !");
+            yield break;
+        }
+
+        // Ensuite tu continues avec l’instanciation :
+        playerInstance = Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity);
+        orcInstance = Instantiate(orcPrefab, orcSpawn.position, Quaternion.identity);
+
+        // UI setup
+        combatUI = GameObject.Find("CombatUI");
+        questionText = GameObject.Find("QuestionText").GetComponent<Text>();
+        answerInput = GameObject.Find("AnswerInput").GetComponent<InputField>();
+        submitButton = GameObject.Find("SubmitButton").GetComponent<Button>();
+
+        submitButton.onClick.RemoveAllListeners();
+        submitButton.onClick.AddListener(() => CheckAnswer(healthManager));
+
+        playerInstance.GetComponent<PlayerCtrl>().BlockMovement();
         combatUI.SetActive(true);
-        Debug.Log("combatUI activé après SetActive : " + combatUI.activeSelf);
         answerInput.interactable = true;
-        submitButton.interactable = true;  // Active le bouton
+        submitButton.interactable = true;
         answerInput.text = "";
-        answerInput.Select();  // Focus automatique sur l'input
+        answerInput.Select();
         answerInput.ActivateInputField();
+
         GenerateQuestion();
     }
+
+
 
     private void GenerateQuestion()
     {
@@ -79,10 +119,11 @@ public class CombatManager : MonoBehaviour
             currentCorrectAnswer = num1 * num2;
             questionText.text = $"Combien fait {num1} x {num2} ?";
         }
+
         answerInput.text = "";
     }
 
-    private void CheckAnswer()
+    private void CheckAnswer(HealthManager healthManager)
     {
         if (int.TryParse(answerInput.text, out int playerAnswer))
         {
@@ -114,16 +155,11 @@ public class CombatManager : MonoBehaviour
     {
         Debug.Log(playerWon ? "Victoire !" : "Défaite...");
 
-        mainCamera.enabled = true;
-        arenaCamera.enabled = false;
-
-        player.transform.position = originalPlayerPosition;
-        orc.transform.position = originalEnemyPosition;
-
-        player.GetComponent<PlayerCtrl>().AllowMovement();
-        healthManager.ResetHealth();
         combatUI.SetActive(false);
-        answerInput.interactable = false;
+
+        Destroy(playerInstance);
+        Destroy(orcInstance);
+
+        SceneManager.LoadScene(previousSceneName);
     }
 }
-
