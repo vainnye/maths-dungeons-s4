@@ -1,116 +1,85 @@
-﻿using System.Collections;
-using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
-using UnityEngine.SceneManagement;
-using UnityEngine.EventSystems;
+﻿using UnityEngine;
+using TMPro;  // N'oubliez pas d'ajouter ce using pour TextMeshPro
 
 public class CombatManager : MonoBehaviour
 {
     [Header("Références générales")]
     [SerializeField] private GameObject playerPrefab;
     [SerializeField] private GameObject orcPrefab;
-    [SerializeField] private string arenaSceneName = "ArenaScene";
-    private GameObject playerInstance;
-    private GameObject orcInstance;
 
     [Header("UI Combat")]
     [SerializeField] private GameObject combatUI;
-    [SerializeField] private Text questionText;
-    [SerializeField] private InputField answerInput;
-    [SerializeField] private Button submitButton;
+    [SerializeField] private TMP_Text questionText;  // Remplacer UnityEngine.UI.Text par TMP_Text
+    [SerializeField] private TMP_InputField answerInput;  // Remplacer UnityEngine.UI.InputField par TMP_InputField
+    [SerializeField] private UnityEngine.UI.Button submitButton;  // Remplacer UnityEngine.UI.Button par TMP_Button (si nécessaire)
+
+    private Camera mainCamera;  // Référence à la caméra principale (Main Camera)
+    private bool combatInProgress = false;  // Pour suivre l'état du combat
 
     private int currentCorrectAnswer;
-    private string previousSceneName;
 
-    void Awake()
+    private void Start()
     {
-        if (FindObjectsOfType<CombatManager>().Length > 1)
+        // Obtenir la caméra principale au début
+        mainCamera = Camera.main;
+        if (mainCamera == null)
         {
-            Destroy(this.gameObject); // Évite les doublons
-            return;
+            Debug.LogError("La caméra principale n'a pas été trouvée !");
         }
-
-        DontDestroyOnLoad(this.gameObject);
-        Debug.Log("Awake called from " + gameObject.name);
     }
-
 
     public void StartCombat()
     {
-        previousSceneName = SceneManager.GetActiveScene().name;
-        SceneManager.sceneLoaded += OnArenaSceneLoaded;
-        SceneManager.LoadScene(arenaSceneName, LoadSceneMode.Additive);
-    }
+        // Trouver les modèles existants sur l'arène
+        GameObject playerArenaModel = GameObject.Find("PlayerArena");  // Le modèle du joueur dans l'arène
+        GameObject orcArenaModel = GameObject.Find("OrcArena");  // Le modèle de l'orc dans l'arène
 
-    private void OnArenaSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        if (scene.name == arenaSceneName)
+        if (playerArenaModel == null || orcArenaModel == null)
         {
-            SceneManager.sceneLoaded -= OnArenaSceneLoaded;
-
-            if (!this.gameObject.activeInHierarchy)
-            {
-                Debug.LogWarning("CombatManager désactivé, impossible de démarrer le combat !");
-                return;
-            }
-
-            StartCoroutine(InitializeCombatAfterSceneLoad());
-        }
-    }
-
-    private IEnumerator InitializeCombatAfterSceneLoad()
-    {
-        EventSystem[] systems = FindObjectsOfType<EventSystem>();
-        if (systems.Length > 1)
-        {
-            for (int i = 1; i < systems.Length; i++)
-            {
-                Destroy(systems[i].gameObject);
-            }
+            Debug.LogError("Les modèles PlayerArena ou OrcArena sont introuvables !");
+            return;
         }
 
-        yield return null; // attendre 1 frame
-
-        // Attendre que HealthManager soit dispo
-        HealthManager healthManager = null;
-        int maxTries = 30;
-        while (healthManager == null && maxTries-- > 0)
+        // Configuration de l'UI
+        if (combatUI == null || questionText == null || answerInput == null || submitButton == null)
         {
-            healthManager = FindObjectOfType<HealthManager>();
-            yield return null;
+            Debug.LogError("Une ou plusieurs références UI sont manquantes dans l'inspecteur !");
+            return;
         }
 
-        if (healthManager == null)
-        {
-            Debug.LogError("HealthManager introuvable !");
-            yield break;
-        }
-
-        // Idem pour les spawns
-        Transform playerSpawn = GameObject.Find("ArenaPlayerSpawn")?.transform;
-        Transform orcSpawn = GameObject.Find("ArenaEnemySpawn")?.transform;
-
-        if (playerSpawn == null || orcSpawn == null)
-        {
-            Debug.LogError("Spawn points non trouvés !");
-            yield break;
-        }
-
-        // Ensuite tu continues avec l’instanciation :
-        playerInstance = Instantiate(playerPrefab, playerSpawn.position, Quaternion.identity);
-        orcInstance = Instantiate(orcPrefab, orcSpawn.position, Quaternion.identity);
-
-        // UI setup
         combatUI = GameObject.Find("CombatUI");
-        questionText = GameObject.Find("QuestionText").GetComponent<Text>();
-        answerInput = GameObject.Find("AnswerInput").GetComponent<InputField>();
-        submitButton = GameObject.Find("SubmitButton").GetComponent<Button>();
+        questionText = GameObject.Find("QuestionText").GetComponent<TMP_Text>();
+        answerInput = GameObject.Find("AnswerInput").GetComponent<TMP_InputField>();
+        submitButton = GameObject.Find("SubmitButton").GetComponent<UnityEngine.UI.Button>();
 
         submitButton.onClick.RemoveAllListeners();
-        submitButton.onClick.AddListener(() => CheckAnswer(healthManager));
+        submitButton.onClick.AddListener(() => CheckAnswer());
 
-        playerInstance.GetComponent<PlayerCtrl>().BlockMovement();
+        // Désactiver la caméra principale
+        if (mainCamera != null)
+        {
+            mainCamera.gameObject.SetActive(false);  // Désactiver la caméra principale
+            Debug.Log("Caméra principale désactivée.");
+        }
+        else
+        {
+            Debug.LogError("Caméra principale non trouvée !");
+            return;
+        }
+
+        // Bloquer les déplacements du joueur pendant le combat
+        PlayerCtrl ctrl = playerArenaModel.GetComponent<PlayerCtrl>();
+        if (ctrl != null)
+        {
+            ctrl.BlockMovement();
+            Debug.Log("Mouvement du joueur bloqué pour le combat.");
+        }
+        else
+        {
+            Debug.LogWarning("PlayerCtrl non trouvé sur PlayerArena !");
+        }
+
+        // Afficher l'UI du combat
         combatUI.SetActive(true);
         answerInput.interactable = true;
         submitButton.interactable = true;
@@ -118,10 +87,12 @@ public class CombatManager : MonoBehaviour
         answerInput.Select();
         answerInput.ActivateInputField();
 
+        // Générer une nouvelle question
         GenerateQuestion();
+
+        // Indiquer qu'un combat a commencé
+        combatInProgress = true;
     }
-
-
 
     private void GenerateQuestion()
     {
@@ -146,10 +117,14 @@ public class CombatManager : MonoBehaviour
         }
 
         answerInput.text = "";
+
+        Debug.Log($"Nouvelle question générée : {questionText.text} (Réponse : {currentCorrectAnswer})");
     }
 
-    private void CheckAnswer(HealthManager healthManager)
+    private void CheckAnswer()
     {
+        HealthManager healthManager = FindObjectOfType<HealthManager>();
+
         if (int.TryParse(answerInput.text, out int playerAnswer))
         {
             if (playerAnswer == currentCorrectAnswer)
@@ -182,10 +157,14 @@ public class CombatManager : MonoBehaviour
 
         combatUI.SetActive(false);
 
-        Destroy(playerInstance);
-        Destroy(orcInstance);
+        // Réinitialisation de l'UI ou autres actions nécessaires
+        // Pas de réinitialisation nécessaire dans ce code
 
-        SceneManager.UnloadSceneAsync(arenaSceneName);
-        SceneManager.LoadScene(previousSceneName); // Ou recharger si besoin
+        // Réactiver la caméra principale à la fin du combat
+        if (mainCamera != null)
+        {
+            mainCamera.gameObject.SetActive(true);  // Réactiver la caméra principale
+            Debug.Log("Caméra principale réactivée après le combat.");
+        }
     }
 }

@@ -5,10 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Scenes/ArenaScene.unity
-    guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/KrishnaPalacio/MINIFANTASY - Dungeon/Scenes/Demo - Tileset.unity
     guid: 86db64f61268ad14e902e25fa27637c7
   m_configObjects: {}

@@ -8,16 +8,27 @@ public class EnemyTrigger : MonoBehaviour
 
     private bool combatStarted = false;
 
+    private void Start()
+    {
+        if (combatManager == null)
+        {
+            Debug.LogError($"CombatManager n'est pas assigné dans l'inspecteur pour {gameObject.name} !");
+        }
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (combatStarted) return;
-
-        if (collision.CompareTag("Player"))
+        if (combatManager == null)
         {
+            Debug.LogError("CombatManager est null dans OnTriggerEnter2D.");
+            return;
+        }
+
+        if (!combatStarted && collision.CompareTag("Player"))
+        {
+            Debug.Log($"Le joueur est entré dans la zone de {gameObject.name}. Démarrage du combat...");
             combatStarted = true;
-            Debug.Log("Début du combat !");
             combatManager.StartCombat();
         }
     }
 }
-
