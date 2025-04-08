@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 public class CombatManager : MonoBehaviour
 {
@@ -24,14 +25,22 @@ public class CombatManager : MonoBehaviour
 
     void Awake()
     {
-        //DontDestroyOnLoad(this.gameObject);
+        if (FindObjectsOfType<CombatManager>().Length > 1)
+        {
+            Destroy(this.gameObject); // Évite les doublons
+            return;
+        }
+
+        DontDestroyOnLoad(this.gameObject);
+        Debug.Log("Awake called from " + gameObject.name);
     }
+
 
     public void StartCombat()
     {
         previousSceneName = SceneManager.GetActiveScene().name;
         SceneManager.sceneLoaded += OnArenaSceneLoaded;
-        SceneManager.LoadScene(arenaSceneName);
+        SceneManager.LoadScene(arenaSceneName, LoadSceneMode.Additive);
     }
 
     private void OnArenaSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -39,12 +48,28 @@ public class CombatManager : MonoBehaviour
         if (scene.name == arenaSceneName)
         {
             SceneManager.sceneLoaded -= OnArenaSceneLoaded;
+
+            if (!this.gameObject.activeInHierarchy)
+            {
+                Debug.LogWarning("CombatManager désactivé, impossible de démarrer le combat !");
+                return;
+            }
+
             StartCoroutine(InitializeCombatAfterSceneLoad());
         }
     }
 
     private IEnumerator InitializeCombatAfterSceneLoad()
     {
+        EventSystem[] systems = FindObjectsOfType<EventSystem>();
+        if (systems.Length > 1)
+        {
+            for (int i = 1; i < systems.Length; i++)
+            {
+                Destroy(systems[i].gameObject);
+            }
+        }
+
         yield return null; // attendre 1 frame
 
         // Attendre que HealthManager soit dispo
@@ -160,6 +185,7 @@ public class CombatManager : MonoBehaviour
         Destroy(playerInstance);
         Destroy(orcInstance);
 
-        SceneManager.LoadScene(previousSceneName);
+        SceneManager.UnloadSceneAsync(arenaSceneName);
+        SceneManager.LoadScene(previousSceneName); // Ou recharger si besoin
     }
 }
