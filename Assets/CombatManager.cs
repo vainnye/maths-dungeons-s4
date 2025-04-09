@@ -145,10 +145,9 @@ public class CombatManager : MonoBehaviour
         int num1, num2, num3, operation;
         float result;
 
-        // Difficulté 1
+        // Difficulté 1 : Addition, soustraction, multiplication simples
         if (difficulty == 1)
         {
-            // Niveau 1 et 2 : Addition, soustraction, multiplication simples
             num1 = Random.Range(1, 10);
             num2 = Random.Range(1, 10);
             operation = Random.Range(1, 4);
@@ -169,33 +168,29 @@ public class CombatManager : MonoBehaviour
                 questionText.text = $"Combien fait {num1} x {num2} ?";
             }
         }
-        // Difficulté 2
+        // Difficulté 2 : Expressions avec parenthèses et calculs plus complexes
         else if (difficulty == 2)
         {
-            // Niveau 3 : Expressions avec parenthèses et calculs plus complexes
             num1 = Random.Range(1, 10);
             num2 = Random.Range(1, 10);
             num3 = Random.Range(1, 10);
-            operation = Random.Range(1, 3); // 1: multiplication, 2: division
+            operation = Random.Range(1, 3);  // 1: multiplication, 2: division
 
             if (operation == 1)
             {
-                // Exemple : "Combien fait (5 + 3) x 2 ?"
                 currentCorrectAnswer = (num1 + num2) * num3;
                 questionText.text = $"Combien fait ({num1} + {num2}) x {num3} ?";
             }
             else if (operation == 2)
             {
-                // Exemple : "Quel est le résultat de 8 ÷ (2 + 2) ?"
-                int divResult = num1 + num2; // Le diviseur est une somme
-                currentCorrectAnswer = (num1) / divResult;
+                int divResult = num2 + num3; // Le diviseur est une somme
+                currentCorrectAnswer = num1 / divResult;
                 questionText.text = $"Quel est le résultat de {num1} ÷ ({num2} + {num3}) ?";
             }
         }
-        // Difficulté 3
+        // Difficulté 3 : Résolution d'équations complexes
         else if (difficulty == 3)
         {
-            // Niveau 4 : Résolution d'équations complexes
             num1 = Random.Range(1, 10);  // Premier terme
             num2 = Random.Range(1, 10);  // Deuxième terme
             num3 = Random.Range(1, 10);  // Troisième terme
@@ -203,7 +198,6 @@ public class CombatManager : MonoBehaviour
 
             if (operation == 1)
             {
-                // Exemple : 3x + 5 = 20
                 int coeff = Random.Range(1, 5);  // Coefficient pour x
                 int constant = Random.Range(1, 10);  // Terme constant
                 int resultat = Random.Range(10, 30); // La constante de droite (ex: 20)
@@ -212,12 +206,10 @@ public class CombatManager : MonoBehaviour
             }
             else if (operation == 2)
             {
-                // Exemple : 4x - 2 = 3(x + 5)
                 int coeff1 = Random.Range(1, 5);  // Coefficient de x à gauche
                 int coeff2 = Random.Range(1, 5);  // Coefficient de x à droite
                 int constant1 = Random.Range(1, 10);  // Terme constant à gauche
                 int constant2 = Random.Range(1, 10);  // Terme constant à droite
-                                                      // Résolution de l'équation : 4x - 2 = 3(x + 5)
                 int leftSide = coeff1 * num1 - constant1;
                 int rightSide = coeff2 * (num1 + constant2);
                 currentCorrectAnswer = (constant2 - constant1) / (coeff1 - coeff2);  // Résolution de l'équation
@@ -225,52 +217,40 @@ public class CombatManager : MonoBehaviour
             }
             else if (operation == 3)
             {
-                // Exemple : Résoudre un système d'équations
-                int constant1 = Random.Range(1, 10); // Terme constant pour la première équation
-                int constant2 = Random.Range(1, 10); // Terme constant pour la seconde équation
-
-                // Calcul de x et y de manière à ce que les réponses soient entières
                 int x = Random.Range(1, 10); // x entre 1 et 10
                 int y = Random.Range(1, 10); // y entre 1 et 10
 
-                // Créer un système d'équations linéaires
-                int equation1Left = x + y;  // Première équation : x + y = ? (ex: 7)
-                int equation2Left = 2 * x - y;  // Deuxième équation : 2x - y = ? (ex: 10)
-
-                // La somme des deux équations donnera la bonne réponse
-                currentCorrectAnswer = equation1Left;  // On utilise le résultat de la première équation
+                int equation1Left = x + y;
+                int equation2Left = 2 * x - y;
+                currentCorrectAnswer = equation1Left;
 
                 questionText.text = $"Résoudre le système d'équations : x + y = {equation1Left}, 2x - y = {equation2Left}. Quelle est la valeur de x + y ?";
             }
             else if (operation == 4)
             {
-                // Exemple : x² + 2x - 3 = 0
                 int a = Random.Range(1, 5);  // Coefficient de x²
                 int b = Random.Range(1, 5);  // Coefficient de x
                 int c = Random.Range(-10, 10);  // Terme constant
-                                                // Résoudre l'équation quadratique : ax² + bx + c = 0
-                int discriminant = b * b - 4 * a * c; // Discriminant pour vérifier si il existe une solution réelle
+                int discriminant = b * b - 4 * a * c;
+
                 if (discriminant >= 0)
                 {
-                    // Si le discriminant est positif ou nul, nous avons des solutions réelles
                     int sqrtDiscriminant = Mathf.FloorToInt(Mathf.Sqrt(discriminant));
                     int x1 = (-b + sqrtDiscriminant) / (2 * a);
                     int x2 = (-b - sqrtDiscriminant) / (2 * a);
                     questionText.text = $"Résoudre l'équation : {a}x² + {b}x + {c} = 0. Quelle est la valeur de x ?";
-                    currentCorrectAnswer = x1; // Choisir x1 comme solution
+                    currentCorrectAnswer = x1;
                 }
                 else
                 {
-                    // Si le discriminant est négatif, il n'y a pas de solutions réelles, vous pouvez gérer cela différemment
                     questionText.text = $"L'équation {a}x² + {b}x + {c} = 0 n'a pas de solution réelle.";
                     currentCorrectAnswer = int.MinValue;  // Indiquer qu'il n'y a pas de solution réelle
                 }
             }
         }
-        // Difficulté 4
+        // Difficulté 4 : Mathématiques universitaires
         else if (difficulty == 4)
         {
-            // Mathématiques universitaires (niveau avancé)
             num1 = Random.Range(1, 50);
             num2 = Random.Range(1, 50);
             num3 = Random.Range(1, 50);
@@ -278,21 +258,18 @@ public class CombatManager : MonoBehaviour
 
             if (operation == 1)
             {
-                // Exemple de calcul intégral (simplifié pour l'exemple)
                 result = num1 * Mathf.Pow(num2, 2) / 2f;
                 currentCorrectAnswer = Mathf.RoundToInt(result);
                 questionText.text = $"Intégrale de {num1}x² dx entre 0 et {num2}. Quel est le résultat ?";
             }
             else if (operation == 2)
             {
-                // Exemple de dérivée (simplifiée)
                 result = 2 * num1 * num2;
                 currentCorrectAnswer = Mathf.RoundToInt(result);
                 questionText.text = $"Quelle est la dérivée de {num1}x² ?";
             }
             else if (operation == 3)
             {
-                // Exemple de système d'équations : x + y = 10, 2x - y = 4
                 currentCorrectAnswer = num1 + num2;
                 questionText.text = $"Résoudre le système d'équations : x + y = 10, 2x - y = 4. Quelle est la valeur de x + y ?";
             }
@@ -304,6 +281,7 @@ public class CombatManager : MonoBehaviour
     }
 
 
+
     private void CheckAnswer()
     {
         HealthManager healthManager = FindObjectOfType<HealthManager>();
@@ -312,7 +290,7 @@ public class CombatManager : MonoBehaviour
         {
             if (playerAnswer == currentCorrectAnswer)
             {
-                healthManager.TakeDamageToOrc(20);
+                healthManager.TakeDamageToOrc(50);
             }
             else
             {
@@ -409,16 +387,40 @@ public class CombatManager : MonoBehaviour
         }
     }
 
-    private void respawnOrcs()
+    public void respawnOrcs()
     {
-        foreach (var orc in orcsInDungeon)
+        // Déplacez d'abord le joueur à une position sûre, loin de l'orc
+        GameObject player = GameObject.Find("Player"); // Assurez-vous que le nom de votre player est correct
+        GameObject playerSpawnPoint = GameObject.Find("PlayerSpawnPoint");
+
+        if (player != null)
         {
-            if (orc != null)
+            player.transform.position = playerSpawnPoint.transform.position; // Déplace le joueur
+        }
+
+        // Maintenant, respawn les orcs
+        foreach (GameObject orc in orcsInDungeon)
+        {
+            if (!orc.activeInHierarchy)  // Si l'orc est désactivé, réactivez-le
             {
-                orc.SetActive(true);  // Réactive l'orc
+                orc.SetActive(true);
+
+                // Réinitialiser les comportements de l'orc si nécessaire
+                EnemyTrigger trigger = orc.GetComponent<EnemyTrigger>();
+                if (trigger != null)
+                {
+                    trigger.ResetTrigger();  // Réinitialise l'état du déclencheur
+                }
+                // Vérifier et réactiver l'Animator de l'orc
+                Animator animator = orc.GetComponent<Animator>();
+                if (animator != null)
+                {
+                    animator.enabled = true;  // Activer l'Animator
+                    animator.SetBool("isRunning", true);  // Active l'animation "Running"
+                }
             }
         }
-        // Vous pouvez aussi réinitialiser d'autres aspects comme la santé des orcs, la difficulté, etc. si nécessaire.
-        Debug.Log("Les orcs sont de nouveau activés !");
+        Debug.Log("Les orcs ont été réactivés, et le joueur a été déplacé loin.");
     }
+
 }

@@ -9,6 +9,12 @@ public class EnemyTrigger : MonoBehaviour
 
     private bool combatStarted = false;
 
+    // Réinitialise l'état du déclencheur
+    public void ResetTrigger()
+    {
+        combatStarted = false; // Réinitialise l'état du combat pour permettre un nouveau démarrage du combat
+    }
+
     private void Start()
     {
         if (combatManager == null)
