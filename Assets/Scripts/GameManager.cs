@@ -32,8 +32,11 @@ public class GameManager : MonoBehaviour
 
 
     private const int MAX_DIFF_IMPLEMENTEE = 4;
-    [Header("Difficulté du début")]
-    [Range(1, MAX_DIFF_IMPLEMENTEE)] public int Difficulty { get; private set; } = 1;
+
+    [Range(1, MAX_DIFF_IMPLEMENTEE)]
+    [SerializeField] private int startDifficulty = 1;
+    
+    public int Difficulty { get; private set; } = 1;
 
     public bool CombatInProgress { get; set; } = false;
     public bool GameStarted { get; private set; } = false;
@@ -58,6 +61,7 @@ public class GameManager : MonoBehaviour
         mainCamera.SetActive(true);
         arenaCamera.SetActive(false);
 
+        Difficulty = startDifficulty;
         ShowDifficulty();
     }
 
@@ -88,6 +92,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("vous avez entièrement terminé le jeu, il n'y a pas de difficultés supplémentaires");
         }
         else Difficulty++;
+        spawner.maxEnemies += Difficulty * 2;
         ShowDifficulty();
     }
 

@@ -1,7 +1,11 @@
+using System;
+using System.Text;
 using UnityEngine;
 
 public class QuestionGenerator
 {
+    private static System.Random rand = new System.Random();
+
     public static (string question, string answer) GenerateQuestion()
     {
         string question, answer;
@@ -39,24 +43,24 @@ public class QuestionGenerator
         int num1, num2, operation;
         string answer, question;
         // Niveau 1 et 2 : Addition, soustraction, multiplication simples
-        num1 = Random.Range(1, 10);
-        num2 = Random.Range(1, 10);
-        operation = Random.Range(1, 4);
+        num1 = UnityEngine.Random.Range(1, 10);
+        num2 = UnityEngine.Random.Range(1, 10);
+        operation = UnityEngine.Random.Range(1, 4);
 
         if (operation == 1)
         {
             answer = (num1 + num2).ToString();
-            question = $"Combien fait {num1} + {num2} ?";
+            question = $"Combien fait :\n{num1} + {num2} ?";
         }
         else if (operation == 2)
         {
             answer = (num1 - num2).ToString();
-            question = $"Combien fait {num1} - {num2} ?";
+            question = $"Combien fait :\n{num1} - {num2} ?";
         }
         else
         {
             answer = (num1 * num2).ToString();
-            question = $"Combien fait {num1} x {num2} ?";
+            question = $"Combien fait :\n{num1} x {num2} ?";
         }
 
         return (question, answer);
@@ -67,23 +71,23 @@ public class QuestionGenerator
     {
         int num1, num2, num3, operation;
         string answer, question;
-        num1 = Random.Range(1, 10);
-        num2 = Random.Range(1, 10);
-        num3 = Random.Range(1, 10);
-        operation = Random.Range(1, 3); // 1: multiplication, 2: division
+        num1 = UnityEngine.Random.Range(1, 10);
+        num2 = UnityEngine.Random.Range(1, 10);
+        num3 = UnityEngine.Random.Range(1, 10);
+        operation = UnityEngine.Random.Range(1, 3); // 1: multiplication, 2: division
 
         if (operation == 1)
         {
             // Exemple : "Combien fait (5 + 3) x 2 ?"
             answer = ((num1 + num2) * num3).ToString();
-            question = $"Combien fait ({num1} + {num2}) x {num3} ?";
+            question = $"Combien fait :\n({num1} + {num2}) x {num3} ?";
         }
         else //if (operation == 2)
         {
             // Exemple : "Quel est le résultat de 8 ÷ (2 + 2) ?"
             int divResult = num1 + num2; // Le diviseur est une somme
             answer = (num1 / divResult).ToString();
-            question = $"Quel est le résultat de {num1} ÷ ({num2} + {num3}) ?";
+            question = $"Quel est le résultat de :\n{num1} ÷ ({num2} + {num3}) ?";
         }
 
         return (question, answer);
@@ -92,114 +96,80 @@ public class QuestionGenerator
 
     private static (string question, string answer) GenQ3()
     {
-        int num1, num2, num3, operation;
-        string question, answer;
+        int[] coeffs = GenererPolynome(3); // Degré 3 max
+        string polynome = AfficherPolynome(coeffs);
+        int[] derivee = Deriver(coeffs);
+        string polynomeDerive = AfficherPolynome(derivee);
 
-        num1 = Random.Range(1, 10);  // Premier terme
-        num2 = Random.Range(1, 10);  // Deuxième terme
-        num3 = Random.Range(1, 10);  // Troisième terme
-        operation = Random.Range(1, 5); // 1: équation linéaire simple, 2: équation avec multiplication, 3: système d'équations, 4: équation quadratique
-
-        if (operation == 1)
-        {
-            // Exemple : 3x + 5 = 20
-            int coeff = Random.Range(1, 5);  // Coefficient pour x
-            int constant = Random.Range(1, 10);  // Terme constant
-            int resultat = Random.Range(10, 30); // La constante de droite (ex: 20)
-            answer = ((resultat - constant) / coeff).ToString();  // Résolution de l'équation
-            question = $"Résoudre {coeff}x + {constant} = {resultat}. Quelle est la valeur de x ?";
-        }
-        else if (operation == 2)
-        {
-            // Exemple : 4x - 2 = 3(x + 5)
-            int coeff1 = Random.Range(1, 5);  // Coefficient de x à gauche
-            int coeff2 = Random.Range(1, 5);  // Coefficient de x à droite
-            int constant1 = Random.Range(1, 10);  // Terme constant à gauche
-            int constant2 = Random.Range(1, 10);  // Terme constant à droite
-                                                  // Résolution de l'équation : 4x - 2 = 3(x + 5)
-            int leftSide = coeff1 * num1 - constant1;
-            int rightSide = coeff2 * (num1 + constant2);
-            answer = ((constant2 - constant1) / (coeff1 - coeff2)).ToString();  // Résolution de l'équation
-            question = $"Résoudre {coeff1}x - {constant1} = {coeff2}(x + {constant2}). Quelle est la valeur de x ?";
-        }
-        else if (operation == 3)
-        {
-            // Exemple : Résoudre un système d'équations
-            int constant1 = Random.Range(1, 10); // Terme constant pour la première équation
-            int constant2 = Random.Range(1, 10); // Terme constant pour la seconde équation
-
-            // Calcul de x et y de manière à ce que les réponses soient entières
-            int x = Random.Range(1, 10); // x entre 1 et 10
-            int y = Random.Range(1, 10); // y entre 1 et 10
-
-            // Créer un système d'équations linéaires
-            int equation1Left = x + y;  // Première équation : x + y = ? (ex: 7)
-            int equation2Left = 2 * x - y;  // Deuxième équation : 2x - y = ? (ex: 10)
-
-            // La somme des deux équations donnera la bonne réponse
-            answer = equation1Left.ToString();  // On utilise le résultat de la première équation
-
-            question = $"Résoudre le système d'équations : x + y = {equation1Left}, 2x - y = {equation2Left}. Quelle est la valeur de x + y ?";
-        }
-        else //if (operation == 4)
-        {
-            // Exemple : x² + 2x - 3 = 0
-            int a = Random.Range(1, 5);  // Coefficient de x²
-            int b = Random.Range(1, 5);  // Coefficient de x
-            int c = Random.Range(-10, 10);  // Terme constant
-                                            // Résoudre l'équation quadratique : ax² + bx + c = 0
-            int discriminant = b * b - 4 * a * c; // Discriminant pour vérifier si il existe une solution réelle
-            if (discriminant >= 0)
-            {
-                // Si le discriminant est positif ou nul, nous avons des solutions réelles
-                int sqrtDiscriminant = Mathf.FloorToInt(Mathf.Sqrt(discriminant));
-                int x1 = (-b + sqrtDiscriminant) / (2 * a);
-                int x2 = (-b - sqrtDiscriminant) / (2 * a);
-                question = $"Résoudre l'équation : {a}x² + {b}x + {c} = 0. Quelle est la valeur de x ?";
-                answer = x1.ToString(); // Choisir x1 comme solution
-            }
-            else
-            {
-                // Si le discriminant est négatif, il n'y a pas de solutions réelles, vous pouvez gérer cela différemment
-                question = $"L'équation {a}x² + {b}x + {c} = 0 n'a pas de solution réelle.";
-                answer = int.MinValue.ToString();  // Indiquer qu'il n'y a pas de solution réelle
-            }
-        }
-
-        return (question, answer);
+        return ("Quelle est la dérivée de :\n" + polynome, polynomeDerive);
     }
 
     private static (string question, string answer) GenQ4()
     {
-        int num1, num2, num3, operation;
-        float result;
-        string question, answer;
-        num1 = Random.Range(1, 50);
-        num2 = Random.Range(1, 50);
-        num3 = Random.Range(1, 50);
-        operation = Random.Range(1, 4); // 1: intégrale, 2: dérivée, 3: systèmes d'équations
+        // On choisit les solutions (x, y) d'abord
+        int x = rand.Next(-10, 11);
+        int y = rand.Next(-10, 11);
 
-        if (operation == 1)
-        {
-            // Exemple de calcul intégral (simplifié pour l'exemple)
-            result = num1 * Mathf.Pow(num2, 2) / 2f;
-            answer = Mathf.RoundToInt(result).ToString();
-            question = $"Intégrale de {num1}x² dx entre 0 et {num2}. Quel est le résultat ?";
-        }
-        else if (operation == 2)
-        {
-            // Exemple de dérivée (simplifiée)
-            result = 2 * num1 * num2;
-            answer = Mathf.RoundToInt(result).ToString();
-            question = $"Quelle est la dérivée de {num1}x² ?";
-        }
-        else //if (operation == 3)
-        {
-            // Exemple de système d'équations : x + y = 10, 2x - y = 4
-            answer = (num1 + num2).ToString();
-            question = $"Résoudre le système d'équations : x + y = 10, 2x - y = 4. Quelle est la valeur de x + y ?";
-        }
+        // On choisit les coefficients de la 1re équation
+        int a1 = rand.Next(1, 11);
+        int b1 = rand.Next(1, 11);
+        if (rand.Next(2) == 0) a1 *= -1;
+        if (rand.Next(2) == 0) b1 *= -1;
+
+        int c1 = a1 * x + b1 * y;
+
+        // On choisit les coefficients de la 2e équation
+        int a2 = rand.Next(1, 11);
+        int b2 = rand.Next(1, 11);
+        if (rand.Next(2) == 0) a2 *= -1;
+        if (rand.Next(2) == 0) b2 *= -1;
+
+        int c2 = a2 * x + b2 * y;
+
+        string question = $"{a1}x + {b1}y = {c1}\n{a2}x + {b2}y = {c2} (répondre avec \"x,y\")";
+        string answer = $"{x},{y}";
 
         return (question, answer);
+    }
+
+
+    static int[] GenererPolynome(int degreMax)
+    {
+        int[] coeffs = new int[degreMax + 1];
+        for (int i = 0; i <= degreMax; i++)
+        {
+            coeffs[i] = rand.Next(-5, 6); // Coefficients entre -5 et 5
+        }
+        coeffs[degreMax] = rand.Next(1, 6); // S'assurer que le terme de plus haut degré est non nul
+        return coeffs;
+    }
+
+    static string AfficherPolynome(int[] coeffs)
+    {
+        StringBuilder sb = new StringBuilder();
+        for (int i = coeffs.Length - 1; i >= 0; i--)
+        {
+            int c = coeffs[i];
+            if (c == 0) continue;
+
+            string signe = (sb.Length > 0 && c > 0) ? " + " : (c < 0 ? " - " : "");
+            string coef = Math.Abs(c) != 1 || i == 0 ? Math.Abs(c).ToString() : "";
+            string variable = i == 0 ? "" : (i == 1 ? "x" : $"x^{i}");
+
+            sb.Append($"{signe}{coef}{variable}");
+        }
+
+        return sb.Length > 0 ? sb.ToString().Trim() : "0";
+    }
+
+
+    static int[] Deriver(int[] coeffs)
+    {
+        int[] derivee = new int[coeffs.Length - 1];
+        for (int i = 1; i < coeffs.Length; i++)
+        {
+            derivee[i - 1] = coeffs[i] * i;
+        }
+        return derivee;
     }
 }

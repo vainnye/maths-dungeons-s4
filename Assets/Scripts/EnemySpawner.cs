@@ -14,7 +14,7 @@ public class EnemySpawner : MonoBehaviour
     private List<GameObject> enemies = new List<GameObject>();
 
     public float spawnInterval = 1f;
-    public int maxEnemies = 20;
+    public int maxEnemies = 3;
     public bool doRespawn = false;
 
     public int NbLiving { get; private set; } = 0;
