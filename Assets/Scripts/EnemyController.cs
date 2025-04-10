@@ -48,8 +48,7 @@ public class EnnemyController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Player"))
         {
-            SpriteRenderer sprite = gameObject.GetComponent<SpriteRenderer>();
-            sprite.flipX = !sprite.flipX;
+            GameManager.Instance.StartCombat(gameObject); // démarrer le comabt avec l'ennemi
         }
     }
 
