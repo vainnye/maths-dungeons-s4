@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class CombatManager : MonoBehaviour
 {
@@ -95,11 +96,11 @@ public class CombatManager : MonoBehaviour
         // Définir le temps limite selon la difficulté
         if (difficulty == 1)
         {
-            timeLimit = 30f;  // 30 secondes pour la difficulté 1
+            timeLimit = 20f;  // 30 secondes pour la difficulté 1
         }
         else if (difficulty == 2)
         {
-            timeLimit = 50f;  // 50 secondes pour la difficulté 2
+            timeLimit = 40f;  // 50 secondes pour la difficulté 2
         }
         else if (difficulty == 3)
         {
@@ -117,6 +118,14 @@ public class CombatManager : MonoBehaviour
     private void Update()
     {
         if (!combatInProgress) return;
+
+        // Validation avec la touche Entrée
+        if (Input.GetKeyDown(KeyCode.Return) && answerInput.interactable &&
+    EventSystem.current.currentSelectedGameObject == answerInput.gameObject)
+        {
+            CheckAnswer();
+        }
+
 
         currentTime -= Time.deltaTime;
         timerText.text = Mathf.Ceil(currentTime) + "s";
@@ -168,24 +177,35 @@ public class CombatManager : MonoBehaviour
                 questionText.text = $"Combien fait {num1} x {num2} ?";
             }
         }
-        // Difficulté 2 : Expressions avec parenthèses et calculs plus complexes
+        // Difficulté 2 : Expressions avec parenthèses, divisions et calculs plus complexes
         else if (difficulty == 2)
         {
-            num1 = Random.Range(1, 10);
-            num2 = Random.Range(1, 10);
-            num3 = Random.Range(1, 10);
-            operation = Random.Range(1, 3);  // 1: multiplication, 2: division
+            num1 = Random.Range(1, 10); // Premier numéro
+            num2 = Random.Range(1, 10); // Deuxième numéro
+            num3 = Random.Range(1, 10); // Troisième numéro
+            operation = Random.Range(1, 4);  // 1: multiplication, 2: addition, 3: division
 
             if (operation == 1)
             {
+                // Multiplication
                 currentCorrectAnswer = (num1 + num2) * num3;
                 questionText.text = $"Combien fait ({num1} + {num2}) x {num3} ?";
             }
             else if (operation == 2)
             {
-                int divResult = num2 + num3; // Le diviseur est une somme
-                currentCorrectAnswer = num1 / divResult;
-                questionText.text = $"Quel est le résultat de {num1} ÷ ({num2} + {num3}) ?";
+                // Addition
+                currentCorrectAnswer = num1 + num2 + num3;
+                questionText.text = $"Combien fait {num1} + {num2} + {num3} ?";
+            }
+            else if (operation == 3)
+            {
+                // Division Euclidienne
+                int sum = num1 + num2;  // On crée une somme qui sera le dividende
+                int divisor = num3;     // Le diviseur
+
+                // On s'assure que la division est sans reste (division euclidienne)
+                currentCorrectAnswer = sum / divisor;
+                questionText.text = $"Quel est le résultat de ({num1} + {num2}) // {num3} ?";
             }
         }
         // Difficulté 3 : Résolution d'équations complexes
@@ -280,8 +300,6 @@ public class CombatManager : MonoBehaviour
         Debug.Log($"Nouvelle question : {questionText.text} (Réponse : {currentCorrectAnswer})");
     }
 
-
-
     private void CheckAnswer()
     {
         HealthManager healthManager = FindObjectOfType<HealthManager>();
@@ -290,8 +308,8 @@ public class CombatManager : MonoBehaviour
         {
             if (playerAnswer == currentCorrectAnswer)
             {
-                healthManager.TakeDamageToOrc(50);
-            }
+                healthManager.TakeDamageToOrc(25);
+            }   
             else
             {
                 healthManager.TakeDamageToPlayer(100); // Mauvaise réponse
@@ -416,7 +434,7 @@ public class CombatManager : MonoBehaviour
                 if (animator != null)
                 {
                     animator.enabled = true;  // Activer l'Animator
-                    animator.SetBool("isRunning", true);  // Active l'animation "Running"
+                    //animator.SetBool("isRunning", true);  // Active l'animation "Running"
                 }
             }
         }
