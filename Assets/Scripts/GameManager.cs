@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject startMenuUI;
     [SerializeField] private GameObject gameOverUI;
+    [SerializeField] private GameObject gameWonUI;
     [SerializeField] private GameObject arenaUI;
     [SerializeField] private GameObject overlayUI;
 
@@ -36,8 +37,14 @@ public class GameManager : MonoBehaviour
     [Range(1, MAX_DIFF_IMPLEMENTEE)]
     [SerializeField] private int startDifficulty = 1;
     
-    public int Difficulty { get; private set; } = 1;
+    public enum GMode
+    {
+        TRAINING,
+        DUNGEON
+    }
 
+    public int Difficulty { get; set; }
+    public GMode GameMode { get; set; }
     public bool CombatInProgress { get; set; } = false;
     public bool GameStarted { get; private set; } = false;
     public bool GamePaused { get; private set; } = false;
@@ -85,15 +92,33 @@ public class GameManager : MonoBehaviour
     }
 
 
-    public void NextDifficulty()
+    public bool NextDifficulty()
     {
+        if (GameMode == GMode.TRAINING) throw new Exception("NextDifficulty n'est pas disponible dans le gamemode entrainement");
+
         if(Difficulty == MAX_DIFF_IMPLEMENTEE)
         {
             Debug.Log("vous avez entièrement terminé le jeu, il n'y a pas de difficultés supplémentaires");
+            return false;
         }
         else Difficulty++;
-        spawner.maxEnemies += Difficulty * 2;
+        switch(Difficulty)
+        {
+            case 1:
+                spawner.maxEnemies = 20;
+                break;
+            case 2:
+                spawner.maxEnemies = 15;
+                break;
+            case 3:
+                spawner.maxEnemies = 10;
+                break;
+            case 4:
+                spawner.maxEnemies = 5;
+                break;
+        }
         ShowDifficulty();
+        return true;
     }
 
 
@@ -109,8 +134,22 @@ public class GameManager : MonoBehaviour
         GameStarted = true;
         UnPauseTime();
         startMenuUI.SetActive(false);
+        spawner.doRespawn = (GameMode == GMode.TRAINING);
+        if (GameMode == GMode.TRAINING)
+        {
+            spawner.maxEnemies = 100;
+            spawner.spawnInterval = 1;
+        }
+        else
+        {
+            Difficulty = 0;
+            NextDifficulty();
+            spawner.spawnInterval = 0.5f;
+        }
         spawner.StartNewWave();
         
+        ShowDifficulty();
+
         Debug.Log("game started");
     }
     public void PauseGame()
@@ -161,18 +200,30 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("Retour au donjon, prêt pour le prochain combat.");
             SwitchCamere(arenaCamera, mainCamera);
-
-            if (spawner.NbLiving == 0)
+            if(GameMode == GMode.DUNGEON)
             {
-                Debug.Log("Tous les orcs sont morts ! Le joueur a gagné.");
-                NextDifficulty();
-                spawner.StartNewWave();
+                if (spawner.NbLiving == 0)
+                {
+                    if (!NextDifficulty())
+                    {
+                        Debug.Log("Tous les orcs sont morts ! Le joueur a gagné.");
+                        gameWonUI.SetActive(true);
+                        return;
+                    }
+                    else
+                    {
+                        spawner.StartNewWave();
+                    }
+                }
+                else
+                {
+                    spawner.SpawnEnemies();
+                }
             }
-            else
+            else if(GameMode == GMode.TRAINING)
             {
                 spawner.SpawnEnemies();
             }
-
         }
     }
 

@@ -69,6 +69,7 @@ public class EnemySpawner : MonoBehaviour
             NbSpawnedInGame++;
             GameManager.Instance.ShowProgress();
         }
-        StartCoroutine(SpawnEnemy(interval, enemy));
+        if(!GameManager.Instance.CombatInProgress)
+            StartCoroutine(SpawnEnemy(interval, enemy));
     }
 }

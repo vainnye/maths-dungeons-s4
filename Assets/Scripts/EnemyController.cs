@@ -33,6 +33,12 @@ public class EnnemyController : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.CombatInProgress)
+        {
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
+
         if (!(origin - Mathf.Abs(direction) < GetPos() && GetPos() < origin + Mathf.Abs(direction)) )
         {
             direction *= -1; // on inverse la direction

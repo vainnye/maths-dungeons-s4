@@ -16,7 +16,7 @@ public class CombatManager : MonoBehaviour
     [SerializeField] private HealthManager healthManager;
 
     private float timeLimit = 30f;
-
+    
     
     private string currentCorrectAnswer;
     private float currentTime;
@@ -33,26 +33,30 @@ public class CombatManager : MonoBehaviour
     {
         if (!GameManager.Instance.CombatInProgress) return;
         
-        currentTime -= Time.deltaTime;
-        timerText.text = Mathf.Ceil(currentTime) + "s";
-
         if (Input.GetKeyDown(KeyCode.Return))
             CheckAnswer(inputField.text);
 
-        if (currentTime <= 0)
+        if(currentTime > 0)
+        {
+            currentTime -= Time.deltaTime;
+            timerText.text = Mathf.Ceil(currentTime) + "s";
+        }
+        else
         {
             Debug.Log("Temps écoulé !");
+            
+            if (currentTime < 0)
+            {
+                currentTime = 0f;
+                timerText.text = "0s";
+            }
 
-            // Mort immédiate du joueur
-            healthManager.TakeDamageToPlayer(500);
+            // Mort progressive du joueur
+            healthManager.TakeDamageToPlayer(Time.deltaTime*80);
 
             if (healthManager.IsPlayerDead())
             {
                 EndCombat(false);
-            }
-            else
-            {
-                NextQuestion(); // On relance la question s'il survit (rare)
             }
         }
     }
@@ -102,14 +106,17 @@ public class CombatManager : MonoBehaviour
 
         if (healthManager.IsOrcDead())
         {
+            Debug.Log("bonne réponse ! ennemi vaincu");
             EndCombat(true);
         }
         else if (healthManager.IsPlayerDead())
         {
+            Debug.Log("mauvaise réponse ! game over");
             EndCombat(false);
         }
         else
         {
+            Debug.Log("bonne réponse ! on passe à la question suivante");
             NextQuestion(); // Question suivante
         }
     }

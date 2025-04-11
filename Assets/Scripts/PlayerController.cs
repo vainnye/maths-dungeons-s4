@@ -14,6 +14,11 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (GameManager.Instance.CombatInProgress)
+        {
+            body.linearVelocity = Vector2.zero;
+            return;
+        }
         body.linearVelocity = speed * new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
     }
 }

@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Text;
 using UnityEngine;
 
@@ -11,28 +11,28 @@ public class QuestionGenerator
         string question, answer;
         int difficulty = GameManager.Instance.Difficulty;
 
-        // Difficulté 1
+        // DifficultÃ© 1
         if (difficulty == 1)
         {
             (question, answer) = GenQ1();
         }
-        // Difficulté 2
+        // DifficultÃ© 2
         else if (difficulty == 2)
         {
             (question, answer) = GenQ2();
         }
-        // Difficulté 3
+        // DifficultÃ© 3
         else if (difficulty == 3)
         {
             (question, answer) = GenQ3();
         }
-        // Difficulté 4
+        // DifficultÃ© 4
         else //if (difficulty == 4)
         {
             (question, answer) = GenQ4();
         }
-        // Réinitialiser le champ de réponse
-        Debug.Log($"Nouvelle question : {question} (Réponse : {answer})");
+        // RÃ©initialiser le champ de rÃ©ponse
+        Debug.Log($"Nouvelle question : {question} (RÃ©ponse : {answer})");
 
         return (question, answer);
     }
@@ -50,58 +50,79 @@ public class QuestionGenerator
         if (operation == 1)
         {
             answer = (num1 + num2).ToString();
-            question = $"Combien fait :\n{num1} + {num2} ?";
+            question = $"{num1} + {num2}";
         }
         else if (operation == 2)
         {
             answer = (num1 - num2).ToString();
-            question = $"Combien fait :\n{num1} - {num2} ?";
+            question = $"{num1} - {num2}";
         }
         else
         {
             answer = (num1 * num2).ToString();
-            question = $"Combien fait :\n{num1} x {num2} ?";
+            question = $"{num1} x {num2}";
         }
 
-        return (question, answer);
+        return ("Combien fait " + question + "\n(nombre entier attendu)", answer);
     }
 
 
-    private static (string question, string answer) GenQ2()
+    static (string, string) GenQ2()
     {
-        int num1, num2, num3, operation;
-        string answer, question;
-        num1 = UnityEngine.Random.Range(1, 10);
-        num2 = UnityEngine.Random.Range(1, 10);
-        num3 = UnityEngine.Random.Range(1, 10);
-        operation = UnityEngine.Random.Range(1, 3); // 1: multiplication, 2: division
+        int a = rand.Next(1, 11);
+        int b = rand.Next(1, 11);
+        int c = rand.Next(1, 11);
 
-        if (operation == 1)
+        int parenthese;
+        string resultat = "";
+        string expression = null;
+
+        int type = rand.Next(4);
+
+        while(expression == null)
         {
-            // Exemple : "Combien fait (5 + 3) x 2 ?"
-            answer = ((num1 + num2) * num3).ToString();
-            question = $"Combien fait :\n({num1} + {num2}) x {num3} ?";
-        }
-        else //if (operation == 2)
-        {
-            // Exemple : "Quel est le résultat de 8 ÷ (2 + 2) ?"
-            int divResult = num1 + num2; // Le diviseur est une somme
-            answer = (num1 / divResult).ToString();
-            question = $"Quel est le résultat de :\n{num1} ÷ ({num2} + {num3}) ?";
+            switch (type)
+            {
+                case 0: // (a + b) Ã— c
+                    parenthese = a + b;
+                    resultat = (parenthese * c).ToString();
+                    expression = $"({a} + {b}) Ã— {c}";
+                    break;
+
+                case 1: // a Ã— (b - c)
+                    parenthese = b - c;
+                    resultat = (a * parenthese).ToString();
+                    expression = $"{a} Ã— ({b} - {c})";
+                    break;
+
+                case 2: // (a + b) Ã· c
+                    parenthese = a + b;
+                    if (parenthese % c != 0) expression = null;
+                    else expression = $"({a} + {b}) Ã· {c}";
+                    resultat = (parenthese / c).ToString();
+                    break;
+
+                case 3: // a Ã· (b + c)
+                    parenthese = b + c;
+                    if (parenthese == 0 || a % parenthese != 0) expression = null;
+                    else expression = $"{a} Ã· ({b} + {c})";
+                    resultat = (a / parenthese).ToString();
+                    break;
+            }
         }
 
-        return (question, answer);
+        return ("Combien fait " + expression + "\n(nombre entier attendu)", resultat);
     }
 
 
     private static (string question, string answer) GenQ3()
     {
-        int[] coeffs = GenererPolynome(3); // Degré 3 max
+        int[] coeffs = GenererPolynome(3); // DegrÃ© 3 max
         string polynome = AfficherPolynome(coeffs);
         int[] derivee = Deriver(coeffs);
         string polynomeDerive = AfficherPolynome(derivee);
 
-        return ("Quelle est la dérivée de :\n" + polynome, polynomeDerive);
+        return ("Quelle est la dÃ©rivÃ©e de " + polynome + "\n(rÃ©pondre avec + - * / ^ ( ) )", polynomeDerive);
     }
 
     private static (string question, string answer) GenQ4()
@@ -110,7 +131,7 @@ public class QuestionGenerator
         int x = rand.Next(-10, 11);
         int y = rand.Next(-10, 11);
 
-        // On choisit les coefficients de la 1re équation
+        // On choisit les coefficients de la 1re Ã©quation
         int a1 = rand.Next(1, 11);
         int b1 = rand.Next(1, 11);
         if (rand.Next(2) == 0) a1 *= -1;
@@ -118,7 +139,7 @@ public class QuestionGenerator
 
         int c1 = a1 * x + b1 * y;
 
-        // On choisit les coefficients de la 2e équation
+        // On choisit les coefficients de la 2e Ã©quation
         int a2 = rand.Next(1, 11);
         int b2 = rand.Next(1, 11);
         if (rand.Next(2) == 0) a2 *= -1;
@@ -126,8 +147,8 @@ public class QuestionGenerator
 
         int c2 = a2 * x + b2 * y;
 
-        string question = $"{a1}x + {b1}y = {c1}\n{a2}x + {b2}y = {c2} (répondre avec \"x,y\")";
-        string answer = $"{x},{y}";
+        string question = $"{a1}x + {b1}y = {c1}\n{a2}x + {b2}y = {c2} (rÃ©pondre avec x:y)";
+        string answer = $"{x}:{y}";
 
         return (question, answer);
     }
@@ -140,7 +161,7 @@ public class QuestionGenerator
         {
             coeffs[i] = rand.Next(-5, 6); // Coefficients entre -5 et 5
         }
-        coeffs[degreMax] = rand.Next(1, 6); // S'assurer que le terme de plus haut degré est non nul
+        coeffs[degreMax] = rand.Next(1, 6); // S'assurer que le terme de plus haut degrÃ© est non nul
         return coeffs;
     }
 
